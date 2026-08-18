@@ -38,6 +38,97 @@ function fmt(n) {
   return num.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
 }
 
+const DEFAULT_CHANNELS = [
+  { id: 'website', name: 'Site internet', group: 'Analytics web', metrics: [
+    { id: 'activeusers', name: 'Utilisateurs actifs', unit: '' },
+    { id: 'newusers', name: 'Nouveaux utilisateurs', unit: '' },
+    { id: 'events', name: 'Événements enregistrés', unit: '' },
+  ]},
+  { id: 'newsletter', name: 'Emailing (HubSpot)', group: 'Newsletter', metrics: [
+    { id: 'sent', name: 'Emails envoyés', unit: '' },
+    { id: 'campaigns', name: 'Campagnes envoyées', unit: '' },
+    { id: 'openrate', name: "Taux d'ouverture", unit: '%' },
+    { id: 'opens', name: 'Ouvertures', unit: '' },
+    { id: 'clickrate', name: 'Taux de clic', unit: '%' },
+    { id: 'clicks', name: 'Clics', unit: '' },
+    { id: 'ctor', name: 'CTOR', unit: '%' },
+    { id: 'replies', name: 'Réponses', unit: '' },
+    { id: 'deliverability', name: 'Délivrabilité', unit: '%' },
+    { id: 'unsub', name: 'Désabonnement', unit: '%' },
+    { id: 'spamreport', name: 'Signalement spam', unit: '%' },
+  ]},
+  { id: 'li_vo', name: 'LinkedIn — Univers VO', group: 'Réseaux sociaux', metrics: [
+    { id: 'impressions', name: 'Impressions', unit: '' },
+    { id: 'reactions', name: 'Réactions', unit: '' },
+    { id: 'comments', name: 'Commentaires', unit: '' },
+    { id: 'reposts', name: 'Republications', unit: '' },
+    { id: 'newfollowers', name: 'Nouveaux abonnés', unit: '' },
+    { id: 'totalfollowers', name: 'Total abonnés', unit: '' },
+    { id: 'searchappearances', name: 'Apparitions dans les recherches', unit: '' },
+    { id: 'pageviews', name: 'Vues de page', unit: '' },
+    { id: 'uniquevisitors', name: 'Visiteurs uniques', unit: '' },
+  ]},
+  { id: 'li_vul', name: 'LinkedIn — VUL & Retail', group: 'Réseaux sociaux', metrics: [
+    { id: 'impressions', name: 'Impressions', unit: '' },
+    { id: 'reactions', name: 'Réactions', unit: '' },
+    { id: 'comments', name: 'Commentaires', unit: '' },
+    { id: 'reposts', name: 'Republications', unit: '' },
+    { id: 'newfollowers', name: 'Nouveaux abonnés', unit: '' },
+    { id: 'totalfollowers', name: 'Total abonnés', unit: '' },
+    { id: 'searchappearances', name: 'Apparitions dans les recherches', unit: '' },
+    { id: 'pageviews', name: 'Vues de page', unit: '' },
+    { id: 'uniquevisitors', name: 'Visiteurs uniques', unit: '' },
+  ]},
+  { id: 'li_fed', name: 'LinkedIn — Les Fédérateurs', group: 'Réseaux sociaux', metrics: [
+    { id: 'impressions', name: 'Impressions', unit: '' },
+    { id: 'reactions', name: 'Réactions', unit: '' },
+    { id: 'comments', name: 'Commentaires', unit: '' },
+    { id: 'reposts', name: 'Republications', unit: '' },
+    { id: 'newfollowers', name: 'Nouveaux abonnés', unit: '' },
+    { id: 'totalfollowers', name: 'Total abonnés', unit: '' },
+    { id: 'searchappearances', name: 'Apparitions dans les recherches', unit: '' },
+    { id: 'pageviews', name: 'Vues de page', unit: '' },
+    { id: 'uniquevisitors', name: 'Visiteurs uniques', unit: '' },
+  ]},
+  { id: 'instagram', name: 'Instagram', group: 'Réseaux sociaux', metrics: [
+    { id: 'views', name: 'Vues', unit: '' },
+    { id: 'reach', name: 'Comptes touchés', unit: '' },
+    { id: 'interactions', name: 'Interactions', unit: '' },
+    { id: 'accountsinteracted', name: 'Comptes ayant interagi', unit: '' },
+    { id: 'profilevisits', name: 'Visites du profil', unit: '' },
+    { id: 'newfollowers', name: 'Nouveaux abonnés', unit: '' },
+    { id: 'pctnonfollowers', name: 'Vues non-abonnés', unit: '%' },
+    { id: 'pctreels', name: 'Part des Reels', unit: '%' },
+    { id: 'pctstories', name: 'Part des Stories', unit: '%' },
+  ]},
+  { id: 'youtube', name: 'YouTube', group: 'Réseaux sociaux', metrics: [
+    { id: 'views', name: 'Vues', unit: '' },
+    { id: 'watchtime', name: 'Temps de visionnage', unit: 'h' },
+    { id: 'newsubscribers', name: 'Nouveaux abonnés', unit: '' },
+    { id: 'impressions', name: 'Impressions', unit: '' },
+    { id: 'videoviews', name: 'Vues sur vidéos', unit: '' },
+    { id: 'ctr', name: 'CTR', unit: '%' },
+    { id: 'avgduration', name: 'Durée moyenne', unit: 'min' },
+    { id: 'monthlyaudience', name: 'Audience mensuelle', unit: '' },
+  ]},
+  { id: 'spotify', name: 'Spotify', group: 'Podcast', metrics: [
+    { id: 'plays', name: 'Lectures / téléchargements', unit: '' },
+    { id: 'newsubscribers', name: 'Nouveaux abonnés', unit: '' },
+    { id: 'audience', name: 'Audience', unit: '' },
+    { id: 'impressions', name: 'Impressions', unit: '' },
+    { id: 'streams', name: 'Lectures', unit: '' },
+    { id: 'conversionrate', name: 'Taux de conversion', unit: '%' },
+    { id: 'completionrate', name: 'Taux de complétion moyen', unit: '%' },
+    { id: 'listentime', name: "Temps d'écoute", unit: 'h' },
+    { id: 'avglistentime', name: "Temps moyen d'écoute", unit: 'min' },
+  ]},
+  { id: 'club', name: 'Meltingspot (CLUB)', group: 'Plateforme CLUB', metrics: [
+    { id: 'members', name: 'Membres', unit: '' },
+    { id: 'newmembers', name: 'Nouveaux membres', unit: '' },
+    { id: 'pendinginvites', name: "Invitations en attente", unit: '' },
+  ]},
+];
+
 export default function DigestView() {
   const [channels, setChannels] = useState([]);
   const [data, setData] = useState({});
@@ -50,7 +141,7 @@ export default function DigestView() {
       try {
         const cfgRaw = await fetchStoreValue(CONFIG_KEY);
         const dataRaw = await fetchStoreValue(DATA_KEY);
-        const cfg = cfgRaw ? JSON.parse(cfgRaw) : [];
+        const cfg = cfgRaw ? JSON.parse(cfgRaw) : DEFAULT_CHANNELS;
         const d = dataRaw ? JSON.parse(dataRaw) : {};
         setChannels(cfg);
         setData(d);
